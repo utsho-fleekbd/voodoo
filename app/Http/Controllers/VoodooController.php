@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\VoodooViewUpdated;
 use App\Models\Voodoo;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -58,6 +59,9 @@ class VoodooController extends Controller
     public function show(Voodoo $voodoo)
     {
         $voodoo->increment('views', 1);
+
+        VoodooViewUpdated::dispatch($voodoo->id, $voodoo->views);
+
         $voodoo->load(['author', 'persuasions'])
             ->loadCount('persuasions');
 

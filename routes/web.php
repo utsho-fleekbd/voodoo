@@ -7,8 +7,6 @@ use Illuminate\Support\Facades\Route;
 Route::inertia('/', 'welcome')->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::inertia('dashboard', 'dashboard')->name('dashboard');
-
     Route::get('/voodoos', [VoodooController::class, 'index'])
         ->name('voodoos.index');
     Route::get('/voodoos/create', [VoodooController::class, 'create'])

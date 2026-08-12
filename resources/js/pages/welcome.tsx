@@ -1,10 +1,10 @@
 import { Head, Link, usePage } from '@inertiajs/react';
-import { login, register, dashboard } from '@/routes';
+import { login, register } from '@/routes';
 import { index } from '@/routes/voodoos';
 import type { Auth } from '@/types';
 
 export default function Welcome() {
-    const { auth, quote } = usePage<Auth>().props;
+    const { auth } = usePage<Auth>().props;
 
     return (
         <>
@@ -25,12 +25,6 @@ export default function Welcome() {
                                     className="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
                                 >
                                     Go to Voodoos
-                                </Link>
-                                <Link
-                                    href={dashboard()}
-                                    className="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
-                                >
-                                    Dashboard
                                 </Link>
                             </>
                         ) : (

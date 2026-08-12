@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\PersuasionCountUpdated;
 use App\Models\Persuasion;
 use App\Models\Voodoo;
 use Illuminate\Http\Request;
@@ -25,5 +26,9 @@ class PersuasionController extends Controller
                 'persuaded_user_id' => $request->user()->id,
             ]);
         }
+
+        PersuasionCountUpdated::dispatch($voodoo->id, $voodoo->persuasions()->count());
+
+        return back();
     }
 }
