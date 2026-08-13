@@ -4,18 +4,19 @@ namespace App\Events;
 
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class VoodooViewUpdated implements ShouldBroadcast
+class VoodooCreated implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(public int $voodooId, public int $count) {}
+    public function __construct(public Collection $latestVoodoos) {}
 
     /**
      * Get the channels the event should broadcast on.
@@ -25,7 +26,7 @@ class VoodooViewUpdated implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new Channel('voodoos.'.$this->voodooId),
+            new Channel('voodoos.created'),
         ];
     }
 }

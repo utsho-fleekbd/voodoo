@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import {
     Card,
     CardContent,
-    CardDescription,
     CardFooter,
     CardHeader,
     CardTitle,
@@ -18,50 +17,60 @@ import {
 } from '@/components/ui/tooltip';
 import { persuade } from '@/routes/persuasions';
 import { show } from '@/routes/voodoos';
-import type { VoodooWithAuthorAndPersuasionCount } from '@/types';
-import type { ViewCountUpdated, PersuasionCountUpdated } from '@/types/events';
+import type { VoodooWithAuthor } from '@/types';
+import type {
+    VoodooViewCountUpdated,
+    PersuasionCountUpdated,
+} from '@/types/events';
 
-export default function VoodooCard({
-    voodoo,
-}: {
-    voodoo: VoodooWithAuthorAndPersuasionCount;
-}) {
-    const [persuasionCount, setPersuasionCount] = useState(
-        voodoo.persuasions_count,
-    );
-    const [viewsCount, setViewsCount] = useState(voodoo.views);
+export default function VoodooCard({ voodoo }: { voodoo: VoodooWithAuthor }) {
+    const [uptoDateVoodoo, setUptoDateVoodoo] = useState(voodoo);
 
     useEchoPublic<PersuasionCountUpdated>(
         `voodoos.${voodoo.id}`,
         'PersuasionCountUpdated',
         (event) => {
-            setPersuasionCount(event.count);
+            setUptoDateVoodoo((voodoo) => ({
+                ...voodoo,
+                persuasions_count: event.count,
+            }));
         },
     );
 
-    useEchoPublic<ViewCountUpdated>(
+    useEchoPublic<VoodooViewCountUpdated>(
         `voodoos.${voodoo.id}`,
-        'VoodooViewUpdated',
+        'VoodooViewCountUpdated',
         (event) => {
-            setViewsCount(event.count);
+            setUptoDateVoodoo((voodoo) => ({
+                ...voodoo,
+                views_count: event.count,
+            }));
         },
     );
 
     return (
         <Card>
             <CardHeader>
-                <CardTitle>Yapper: {voodoo.author.name}</CardTitle>
-                <CardDescription>
-                    Yapped on: {new Date(voodoo.created_at).toString()}
-                </CardDescription>
+                <CardTitle>
+                    <p className="flex items-center gap-1.5 text-sm font-semibold">
+                        {uptoDateVoodoo.author.name}
+                        <span className="text-xs font-thin italic">
+                            {new Date(
+                                uptoDateVoodoo.created_at,
+                            ).toLocaleDateString()}
+                        </span>
+                    </p>
+                </CardTitle>
             </CardHeader>
-            <CardContent>{voodoo.voodoo}</CardContent>
+            <CardContent>
+                <p className="text-xl">{uptoDateVoodoo.voodoo}</p>
+            </CardContent>
             <CardFooter className="gap-2.5">
                 {/* Get Persuaded */}
                 <Tooltip>
                     <Form
                         method="post"
-                        action={persuade(voodoo.id)}
+                        action={persuade(uptoDateVoodoo.id)}
                         options={{
                             preserveScroll: true,
                             preserveState: true,
@@ -69,7 +78,8 @@ export default function VoodooCard({
                     >
                         <TooltipTrigger asChild>
                             <Button className="cursor-pointer">
-                                <WandSparkles /> {persuasionCount}
+                                <WandSparkles />{' '}
+                                {uptoDateVoodoo.persuasions_count}
                             </Button>
                         </TooltipTrigger>
                     </Form>
@@ -79,8 +89,8 @@ export default function VoodooCard({
                 <Tooltip>
                     <TooltipTrigger asChild>
                         <Button asChild>
-                            <Link href={show(voodoo.id)}>
-                                <Eye /> {viewsCount}
+                            <Link href={show(uptoDateVoodoo.id)}>
+                                <Eye /> {uptoDateVoodoo.views_count}
                             </Link>
                         </Button>
                     </TooltipTrigger>
@@ -90,7 +100,8 @@ export default function VoodooCard({
                 <Tooltip>
                     <TooltipTrigger asChild>
                         <Button>
-                            <MessageCircleMore /> "N/A"
+                            <MessageCircleMore />{' '}
+                            {uptoDateVoodoo.re_voodoos_count}
                         </Button>
                     </TooltipTrigger>
                     <TooltipContent>Re-voodoos</TooltipContent>

@@ -1,7 +1,7 @@
-import { Head, Link } from '@inertiajs/react';
-import { create } from '@/routes/voodoos';
+import { Head } from '@inertiajs/react';
 import type { VoodooWithAuthorAndPersuasionCount } from '@/types';
-import VoodooCard from './voodoo_card';
+import VoodooCreateOrEditForm from './create_or_edit';
+import VoodooList from './voodoo_list';
 
 export default function index({
     voodoos,
@@ -21,21 +21,13 @@ export default function index({
             <div className="flex min-h-screen flex-col items-center bg-[#FDFDFC] p-6 text-[#1b1b18] lg:justify-center lg:p-8 dark:bg-[#0a0a0a]">
                 <header className="mb-6 w-full max-w-83.75 text-sm not-has-[nav]:hidden lg:max-w-4xl">
                     <nav className="flex items-center justify-end gap-4">
-                        <Link
-                            href={create()}
-                            className="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
-                        >
-                            Cast a Voodoo
-                        </Link>
+                        <VoodooCreateOrEditForm />
                     </nav>
                 </header>
                 <div className="flex w-full items-center justify-center opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
-                    <main className="flex w-full max-w-83.75 flex-col-reverse lg:max-w-4xl lg:flex-row">
-                        <div className="flex flex-1 flex-col gap-2.5 rounded-br-lg rounded-bl-lg bg-white p-6 pb-12 text-[13px] leading-5 shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] lg:rounded-tl-lg lg:rounded-br-none lg:p-20 dark:bg-[#161615] dark:text-[#EDEDEC] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d]">
-                            {voodoos.map((voodoo) => (
-                                <VoodooCard key={voodoo.id} voodoo={voodoo} />
-                            ))}
-                        </div>
+                    <main className="flex w-full max-w-83.75 flex-col gap-5 lg:max-w-4xl">
+                        <h1 className="text-2xl">Latest Voodoos</h1>
+                        <VoodooList voodoos={voodoos} />
                     </main>
                 </div>
             </div>

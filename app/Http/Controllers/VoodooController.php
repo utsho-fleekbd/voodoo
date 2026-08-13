@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\VoodooViewUpdated;
+use App\Events\VoodooCreated;
+use App\Events\VoodooGotChildren;
+use App\Events\VoodooViewCountUpdated;
 use App\Models\Voodoo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class VoodooController extends Controller
@@ -15,23 +18,14 @@ class VoodooController extends Controller
     public function index()
     {
         $voodoos = Voodoo::query()
-            ->with(['author', 'persuasions'])
-            ->withCount('persuasions')
+            ->with(['author'])
+            ->whereNull('parent_voodoo_id')
             ->latest()
-            ->take(10)
             ->get();
 
         return Inertia::render('voodoos/index', [
             'voodoos' => $voodoos,
         ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        return Inertia::render('voodoos/create_or_edit');
     }
 
     /**
@@ -49,8 +43,49 @@ class VoodooController extends Controller
             'author_id' => $request->user()->id,
         ]);
 
-        return to_route('voodoos.index')
-            ->with(['message' => 'Voodoo has been cast upon the world']);
+        $latestVoodoos = Voodoo::query()
+            ->with(['author'])
+            ->whereNull('parent_voodoo_id')
+            ->latest()
+            ->get();
+
+        VoodooCreated::dispatch(
+            $latestVoodoos,
+        );
+
+        return back();
+    }
+
+    public function storeChildren(Request $request)
+    {
+        $validated = $request->validate([
+            'voodoo' => ['required', 'string'],
+            'parent_voodoo_id' => ['exists:voodoos,id'],
+            'attachment' => ['nullable'],
+        ]);
+
+        $voodoo = Voodoo::findOrFail($validated['parent_voodoo_id']);
+
+        DB::beginTransaction();
+
+        Voodoo::create([
+            'voodoo' => $validated['voodoo'],
+            'parent_voodoo_id' => $voodoo->id,
+            'author_id' => $request->user()->id,
+        ]);
+
+        $voodoo->increment('re_voodoos_count', 1);
+
+        DB::commit();
+
+        $voodoo->load(['author', 'persuasions.user', 'allChildren.author'])
+            ->loadCount('persuasions');
+
+        VoodooGotChildren::dispatch(
+            $voodoo,
+        );
+
+        return back();
     }
 
     /**
@@ -58,11 +93,11 @@ class VoodooController extends Controller
      */
     public function show(Voodoo $voodoo)
     {
-        $voodoo->increment('views', 1);
+        $voodoo->increment('views_count', 1);
 
-        VoodooViewUpdated::dispatch($voodoo->id, $voodoo->views);
+        VoodooViewCountUpdated::dispatch($voodoo->id, $voodoo->views_count);
 
-        $voodoo->load(['author', 'persuasions'])
+        $voodoo->load(['author', 'persuasions.user', 'allChildren'])
             ->loadCount('persuasions');
 
         return Inertia::render('voodoos/show', [

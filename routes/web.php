@@ -13,6 +13,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('voodoos.create');
     Route::post('/voodoos', [VoodooController::class, 'store'])
         ->name('voodoos.store');
+    Route::post('/voodoos/children', [VoodooController::class, 'storeChildren'])
+        ->name('voodoos.storeChildren');
     Route::get('/voodoos/{voodoo}', [VoodooController::class, 'show'])
         ->name('voodoos.show');
 

@@ -15,8 +15,16 @@ return new class extends Migration
             $table->id();
             $table->text('voodoo');
             $table->string('attachment')->nullable();
-            $table->foreignId('author_id')->constrained('users')->cascadeOnDelete();
-            $table->integer('views')->default(0);
+            $table->foreignId('author_id')
+                ->constrained('users')
+                ->cascadeOnDelete();
+            $table->foreignId('parent_voodoo_id')
+                ->nullable()
+                ->constrained('voodoos')
+                ->nullOnDelete();
+            $table->integer('views_count')->default(0);
+            $table->integer('persuasions_count')->default(0);
+            $table->integer('re_voodoos_count')->default(0);
             $table->timestamps();
         });
     }

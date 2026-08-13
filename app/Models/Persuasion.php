@@ -17,7 +17,7 @@ class Persuasion extends Model
         return $this->hasOne(Voodoo::class, 'id', 'voodoo_id');
     }
 
-    public function persuadedUser(): HasOne
+    public function user(): HasOne
     {
         return $this->HasOne(User::class, 'id', 'persuaded_user_id');
     }

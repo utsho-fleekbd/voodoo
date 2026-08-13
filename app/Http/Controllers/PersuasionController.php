@@ -6,6 +6,7 @@ use App\Events\PersuasionCountUpdated;
 use App\Models\Persuasion;
 use App\Models\Voodoo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PersuasionController extends Controller
 {
@@ -17,17 +18,27 @@ class PersuasionController extends Controller
             ->get();
 
         if ($persuasions->count() > 0) {
+            DB::beginTransaction();
+
             $persuasions = Persuasion::query()
                 ->where('persuaded_user_id', $request->user()->id)
                 ->where('voodoo_id', $voodoo->id)
                 ->delete();
+            $voodoo->decrement('persuasions_count', 1);
+
+            DB::commit();
         } else {
+            DB::beginTransaction();
+
             $voodoo->persuasions()->create([
                 'persuaded_user_id' => $request->user()->id,
             ]);
+            $voodoo->increment('persuasions_count', 1);
+
+            DB::commit();
         }
 
-        PersuasionCountUpdated::dispatch($voodoo->id, $voodoo->persuasions()->count());
+        PersuasionCountUpdated::dispatch($voodoo->id, $voodoo->persuasions_count);
 
         return back();
     }
