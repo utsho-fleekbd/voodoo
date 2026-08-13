@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\PersuasionCountUpdated;
 use App\Models\Persuasion;
 use App\Models\Voodoo;
+use App\Notifications\VoodooPersuadedOneNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -30,12 +31,16 @@ class PersuasionController extends Controller
         } else {
             DB::beginTransaction();
 
-            $voodoo->persuasions()->create([
+            $persuasion = $voodoo->persuasions()->create([
                 'persuaded_user_id' => $request->user()->id,
             ]);
             $voodoo->increment('persuasions_count', 1);
 
             DB::commit();
+
+            $voodoo->author->notify(
+                new VoodooPersuadedOneNotification($persuasion)
+            );
         }
 
         PersuasionCountUpdated::dispatch($voodoo->id, $voodoo->persuasions_count);

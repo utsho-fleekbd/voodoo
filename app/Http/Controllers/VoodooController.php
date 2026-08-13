@@ -6,6 +6,7 @@ use App\Events\VoodooCreated;
 use App\Events\VoodooGotChildren;
 use App\Events\VoodooViewCountUpdated;
 use App\Models\Voodoo;
+use App\Notifications\VoodooGotChildrenNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -83,6 +84,10 @@ class VoodooController extends Controller
 
         VoodooGotChildren::dispatch(
             $voodoo,
+        );
+
+        $voodoo->author->notify(
+            new VoodooGotChildrenNotification($voodoo)
         );
 
         return back();
