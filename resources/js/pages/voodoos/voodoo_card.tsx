@@ -62,9 +62,15 @@ export default function VoodooCard({ voodoo }: { voodoo: VoodooWithAuthor }) {
                     </p>
                 </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-2">
                 <p className="text-xl">{uptoDateVoodoo.voodoo}</p>
+                <p className="text-xs font-thin">
+                    {new Date(uptoDateVoodoo.created_at).toLocaleDateString()}
+                    <span className="font-normal"> at </span>
+                    {new Date(uptoDateVoodoo.created_at).toLocaleTimeString()}
+                </p>
             </CardContent>
+
             <CardFooter className="gap-2.5">
                 {/* Get Persuaded */}
                 <Tooltip>

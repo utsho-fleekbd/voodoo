@@ -113,18 +113,21 @@ function VoodooCardWithReply({
                     <CardTitle>
                         <p className="flex items-center gap-1.5 text-sm font-semibold">
                             {uptoDateVoodoo.author.name}
-
-                            <span className="text-xs font-thin italic">
-                                {new Date(
-                                    uptoDateVoodoo.created_at,
-                                ).toLocaleDateString()}
-                            </span>
                         </p>
                     </CardTitle>
                 </CardHeader>
 
-                <CardContent>
+                <CardContent className="space-y-2">
                     <p className="text-xl">{uptoDateVoodoo.voodoo}</p>
+                    <p className="text-xs font-thin">
+                        {new Date(
+                            uptoDateVoodoo.created_at,
+                        ).toLocaleDateString()}
+                        <span className="font-normal"> at </span>
+                        {new Date(
+                            uptoDateVoodoo.created_at,
+                        ).toLocaleTimeString()}
+                    </p>
                 </CardContent>
 
                 <CardFooter className="gap-2.5">

@@ -79,7 +79,7 @@ class VoodooController extends Controller
 
         DB::commit();
 
-        $voodoo->load(['author', 'persuasions.user', 'allChildren.author'])
+        $voodoo->load(['author', 'persuasions.user', 'allChildren'])
             ->loadCount('persuasions');
 
         VoodooGotChildren::dispatch(
