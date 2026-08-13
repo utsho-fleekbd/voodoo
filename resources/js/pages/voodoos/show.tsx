@@ -20,13 +20,12 @@ import {
 
 import { persuade } from '@/routes/persuasions';
 import { index, storeChildren } from '@/routes/voodoos';
-
-import type { VoodooWithAuthorPersuasionsAndChildren } from '@/types';
 import type {
+    VoodooWithAuthorPersuasionsAndChildren,
     PersuasionCountUpdated,
     VoodooGotChildren,
     VoodooViewCountUpdated,
-} from '@/types/events';
+} from '@/types';
 
 export default function Show({
     voodoo,

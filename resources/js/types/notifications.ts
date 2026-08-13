@@ -1,3 +1,10 @@
+export type NotificationWithMeta = {
+    id: string;
+    read_at: string | null;
+    created_at: string;
+    data: Notification;
+};
+
 export type Notification = VoodooNotification;
 
 export type VoodooNotification =

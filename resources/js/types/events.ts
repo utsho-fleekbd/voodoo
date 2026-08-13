@@ -1,5 +1,5 @@
 import type {
-    VoodooWithAuthorAndPersuasionCount,
+    VoodooWithAuthor,
     VoodooWithAuthorPersuasionsAndChildren,
 } from './voodoo';
 
@@ -14,7 +14,7 @@ export type VoodooViewCountUpdated = {
 };
 
 export type VoodooCreated = {
-    latestVoodoos: VoodooWithAuthorAndPersuasionCount[];
+    latestVoodoos: VoodooWithAuthor[];
 };
 
 export type VoodooGotChildren = {

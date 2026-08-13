@@ -3,8 +3,7 @@ import { useEchoNotification } from '@laravel/echo-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import AppLayoutTemplate from '@/layouts/app/app-sidebar-layout';
-import type { BreadcrumbItem } from '@/types';
-import type { Notification } from '@/types/notifications';
+import type { BreadcrumbItem, Notification } from '@/types';
 
 export default function AppLayout({
     breadcrumbs = [],

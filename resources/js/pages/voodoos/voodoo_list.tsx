@@ -1,13 +1,13 @@
 import { useEchoPublic } from '@laravel/echo-react';
 import { useState } from 'react';
-import type { VoodooWithAuthorAndPersuasionCount } from '@/types';
+import type { VoodooWithAuthor } from '@/types';
 import type { VoodooCreated } from '@/types/events';
 import VoodooCard from './voodoo_card';
 
 export default function VoodooList({
     voodoos,
 }: {
-    voodoos: VoodooWithAuthorAndPersuasionCount[];
+    voodoos: VoodooWithAuthor[];
 }) {
     const [latestVoodoos, setLatestVoodoos] = useState(voodoos);
 

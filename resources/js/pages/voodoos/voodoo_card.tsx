@@ -17,11 +17,11 @@ import {
 } from '@/components/ui/tooltip';
 import { persuade } from '@/routes/persuasions';
 import { show } from '@/routes/voodoos';
-import type { VoodooWithAuthor } from '@/types';
 import type {
+    VoodooWithAuthor,
     VoodooViewCountUpdated,
     PersuasionCountUpdated,
-} from '@/types/events';
+} from '@/types';
 
 export default function VoodooCard({ voodoo }: { voodoo: VoodooWithAuthor }) {
     const [uptoDateVoodoo, setUptoDateVoodoo] = useState(voodoo);

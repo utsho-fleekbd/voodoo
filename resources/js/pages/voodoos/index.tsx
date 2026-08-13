@@ -1,13 +1,9 @@
 import { Head } from '@inertiajs/react';
-import type { VoodooWithAuthorAndPersuasionCount } from '@/types';
+import type { VoodooWithAuthor } from '@/types';
 import VoodooCreateOrEditForm from './create_or_edit';
 import VoodooList from './voodoo_list';
 
-export default function index({
-    voodoos,
-}: {
-    voodoos: VoodooWithAuthorAndPersuasionCount[];
-}) {
+export default function index({ voodoos }: { voodoos: VoodooWithAuthor[] }) {
     return (
         <>
             <Head title="Voodoos">
