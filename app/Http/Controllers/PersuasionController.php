@@ -27,6 +27,8 @@ class PersuasionController extends Controller
                 ->delete();
             $voodoo->decrement('persuasions_count', 1);
 
+            PersuasionCountUpdated::dispatch($voodoo->id, $voodoo->persuasions_count);
+
             DB::commit();
         } else {
             DB::beginTransaction();
@@ -36,14 +38,16 @@ class PersuasionController extends Controller
             ]);
             $voodoo->increment('persuasions_count', 1);
 
+            if ($voodoo->author_id !== $request->user()->id) {
+                $voodoo->author->notify(
+                    new VoodooPersuadedOneNotification($persuasion)
+                );
+            }
+
+            PersuasionCountUpdated::dispatch($voodoo->id, $voodoo->persuasions_count);
+
             DB::commit();
-
-            $voodoo->author->notify(
-                new VoodooPersuadedOneNotification($persuasion)
-            );
         }
-
-        PersuasionCountUpdated::dispatch($voodoo->id, $voodoo->persuasions_count);
 
         return back();
     }

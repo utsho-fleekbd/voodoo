@@ -22,10 +22,10 @@ class VoodooController extends Controller
             ->with(['author'])
             ->whereNull('parent_voodoo_id')
             ->latest()
-            ->get();
+            ->paginate();
 
         return Inertia::render('voodoos/index', [
-            'voodoos' => $voodoos,
+            'voodoos' => Inertia::scroll($voodoos),
         ]);
     }
 
@@ -39,19 +39,15 @@ class VoodooController extends Controller
             'attachment' => ['nullable'],
         ]);
 
-        Voodoo::create([
+        $voodoo = Voodoo::create([
             'voodoo' => $validated['voodoo'],
             'author_id' => $request->user()->id,
         ]);
 
-        $latestVoodoos = Voodoo::query()
-            ->with(['author'])
-            ->whereNull('parent_voodoo_id')
-            ->latest()
-            ->get();
+        $voodoo->load('author');
 
         VoodooCreated::dispatch(
-            $latestVoodoos,
+            $voodoo,
         );
 
         return back();
@@ -77,8 +73,6 @@ class VoodooController extends Controller
 
         $voodoo->increment('re_voodoos_count', 1);
 
-        DB::commit();
-
         $voodoo->load(['author', 'persuasions.user', 'allChildren'])
             ->loadCount('persuasions');
 
@@ -86,9 +80,13 @@ class VoodooController extends Controller
             $voodoo,
         );
 
-        $voodoo->author->notify(
-            new VoodooGotChildrenNotification($voodoo)
-        );
+        if ($voodoo->author_id !== $request->user()->id) {
+            $voodoo->author->notify(
+                new VoodooGotChildrenNotification($voodoo)
+            );
+        }
+
+        DB::commit();
 
         return back();
     }

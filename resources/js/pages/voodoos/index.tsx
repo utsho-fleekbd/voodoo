@@ -3,7 +3,11 @@ import type { VoodooWithAuthor } from '@/types';
 import VoodooCreateOrEditForm from './create_or_edit';
 import VoodooList from './voodoo_list';
 
-export default function index({ voodoos }: { voodoos: VoodooWithAuthor[] }) {
+export default function index({
+    voodoos,
+}: {
+    voodoos: { data: VoodooWithAuthor[] };
+}) {
     return (
         <>
             <Head title="Voodoos">

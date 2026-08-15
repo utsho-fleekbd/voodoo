@@ -44,9 +44,11 @@ export function UserMenuContent({ user, unreadNotificationCount }: Props) {
                     >
                         <Bell className="mr-2" />
                         Notifications{' '}
-                        <span className="text-sm italic">
-                            {unreadNotificationCount} Unread
-                        </span>
+                        {unreadNotificationCount > 0 && (
+                            <span className="text-sm italic">
+                                {unreadNotificationCount} Unread
+                            </span>
+                        )}
                     </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>

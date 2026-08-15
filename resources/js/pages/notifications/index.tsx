@@ -1,4 +1,4 @@
-import { Form, Head, Link } from '@inertiajs/react';
+import { Form, Head, InfiniteScroll, router } from '@inertiajs/react';
 import { CheckCheck, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -13,7 +13,7 @@ import type { NotificationWithMeta } from '@/types';
 export default function index({
     notifications,
 }: {
-    notifications: NotificationWithMeta[];
+    notifications: { data: NotificationWithMeta[] };
 }) {
     return (
         <>
@@ -45,76 +45,91 @@ export default function index({
                 <div className="flex w-full items-center justify-center opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
                     <main className="flex w-full max-w-83.75 flex-col gap-5 lg:max-w-4xl">
                         <h1 className="text-2xl">Latest Voodoos</h1>
-                        {notifications.map((notification) => (
-                            <Card key={notification.id}>
-                                <CardContent className="flex items-center justify-between">
-                                    <div className="flex flex-col gap-1">
-                                        <p>{notification.data.message}</p>
-                                        <p className="text-xs font-thin">
-                                            {new Date(
-                                                notification.created_at,
-                                            ).toLocaleDateString()}
-                                            <span className="font-normal">
-                                                {' '}
-                                                at{' '}
-                                            </span>
-                                            {new Date(
-                                                notification.created_at,
-                                            ).toLocaleTimeString()}
-                                        </p>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <Tooltip>
-                                            <TooltipTrigger asChild>
-                                                <Button
-                                                    asChild
-                                                    className="rounded-full"
-                                                    size="sm"
-                                                >
-                                                    <Link
-                                                        href={
-                                                            notification.data
-                                                                .url
-                                                        }
+                        <InfiniteScroll
+                            data="notifications"
+                            className="space-y-2.5"
+                        >
+                            {notifications.data.map((notification) => (
+                                <Card key={notification.id}>
+                                    <CardContent className="flex items-center justify-between">
+                                        <div className="flex flex-col gap-1">
+                                            <p>{notification.data.message}</p>
+                                            <p className="text-xs font-thin">
+                                                {new Date(
+                                                    notification.created_at,
+                                                ).toLocaleDateString()}
+                                                <span className="font-normal">
+                                                    {' '}
+                                                    at{' '}
+                                                </span>
+                                                {new Date(
+                                                    notification.created_at,
+                                                ).toLocaleTimeString()}
+                                            </p>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <Button
+                                                        className="rounded-full"
+                                                        size="sm"
+                                                        onClick={() => {
+                                                            router.post(
+                                                                markAsRead(
+                                                                    notification.id,
+                                                                ),
+                                                                {},
+                                                                {
+                                                                    onSuccess:
+                                                                        () => {
+                                                                            router.visit(
+                                                                                notification
+                                                                                    .data
+                                                                                    .url,
+                                                                            );
+                                                                        },
+                                                                },
+                                                            );
+                                                        }}
                                                     >
                                                         <Eye />
-                                                    </Link>
-                                                </Button>
-                                            </TooltipTrigger>
-                                            <TooltipContent>
-                                                View
-                                            </TooltipContent>
-                                        </Tooltip>
-                                        {!notification.read_at && (
-                                            <Tooltip>
-                                                <Form
-                                                    method="post"
-                                                    action={markAsRead(
-                                                        notification.id,
-                                                    )}
-                                                    options={{
-                                                        preserveScroll: true,
-                                                        preserveState: true,
-                                                    }}
-                                                >
-                                                    <TooltipTrigger asChild>
-                                                        <Button
-                                                            className="rounded-full"
-                                                            size="sm"
-                                                        >
-                                                            <CheckCheck />
-                                                        </Button>
-                                                    </TooltipTrigger>
-                                                </Form>
+                                                    </Button>
+                                                </TooltipTrigger>
                                                 <TooltipContent>
-                                                    Mark as Read
+                                                    View
                                                 </TooltipContent>
                                             </Tooltip>
-                                        )}
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        ))}
+                                            {!notification.read_at && (
+                                                <Tooltip>
+                                                    <Form
+                                                        method="post"
+                                                        action={markAsRead(
+                                                            notification.id,
+                                                        )}
+                                                        options={{
+                                                            preserveScroll: true,
+                                                            preserveState: true,
+                                                        }}
+                                                    >
+                                                        <TooltipTrigger asChild>
+                                                            <Button
+                                                                className="rounded-full"
+                                                                size="sm"
+                                                            >
+                                                                <CheckCheck />
+                                                            </Button>
+                                                        </TooltipTrigger>
+                                                    </Form>
+                                                    <TooltipContent>
+                                                        Mark as Read
+                                                    </TooltipContent>
+                                                </Tooltip>
+                                            )}
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            ))}
+                        </InfiniteScroll>
                     </main>
                 </div>
             </div>

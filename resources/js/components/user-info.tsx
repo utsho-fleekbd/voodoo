@@ -8,7 +8,7 @@ export function UserInfo({
     unreadNotificationCount,
 }: {
     user: User;
-    unreadNotificationCount?: number;
+    unreadNotificationCount: number;
 }) {
     const getInitials = useInitials();
 
@@ -20,7 +20,7 @@ export function UserInfo({
                     {getInitials(user.name)}
                 </AvatarFallback>
             </Avatar>
-            {unreadNotificationCount && (
+            {unreadNotificationCount > 0 && (
                 <Badge className="absolute -top-3 -right-3 size-6 rounded-full">
                     {unreadNotificationCount}
                 </Badge>

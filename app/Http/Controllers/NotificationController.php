@@ -9,9 +9,11 @@ class NotificationController extends Controller
 {
     public function index(Request $request)
     {
-        $notifications = $request->user()->notifications()->get();
 
-        return Inertia::render('notifications/index', ['notifications' => $notifications]);
+        return Inertia::render(
+            'notifications/index',
+            ['notifications' => Inertia::scroll(fn () => $request->user()->notifications()->paginate())]
+        );
     }
 
     public function markAsRead(Request $request, string $id)
@@ -25,7 +27,7 @@ class NotificationController extends Controller
         return back();
     }
 
-    public function markAllAsRead(Request $request )
+    public function markAllAsRead(Request $request)
     {
         $request->user()
             ->unreadNotifications()

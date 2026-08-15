@@ -14,7 +14,7 @@ export type VoodooViewCountUpdated = {
 };
 
 export type VoodooCreated = {
-    latestVoodoos: VoodooWithAuthor[];
+    voodoo: VoodooWithAuthor;
 };
 
 export type VoodooGotChildren = {
